@@ -17,4 +17,7 @@ private:
     UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
     // private임에도 접근을 허용한다는 의미
     float speed;
+    
+    UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+    bool IsFalling;
 };
