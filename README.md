@@ -100,3 +100,22 @@ Product - Build 옵션 사용시 Debug 환경설정을 사용하도록 되어 �
 🕹 11th, Oct 2-1. 애니메이션 기초
 
 📒 보통 애니메이션 기능은 독립적인 class로 생성 (Tick으로가 아닌?)   
+
+🕹 16th, Oct 2-2. 스테이트 머신
+
+* 🛎 들어가기에 앞서,    
+    앞 전시간에 다뤘던 `if-else문`으로 조건을 나누는 것은 조건이 많아지면 굉장히 어지뤄워지고 관리가 힘들어짐 => 이번시간에 다루는 `StateMachine`을 이용하면 보다 쾌적한 조건관리를 할 수 있음
+
+* 🪄 `StateMachine` : 가질 수 있는 경우의 수들을 체크하고 다양한 상태를 빠르고 쉽게 관리 가능한 기능, 여러 상태들을 모아놓은 기계   
+📁 ex. Jump - start, fall, end, etc... 한 동작에도 다양한 애니메이션이 필요   
+📂 Use in BP - `StateMachine` 더블클릭시, 안으로 들어가면 여러 상태를 나누기 가능   
+➡️ 스테이트 추가 및 내부 조건 설정 / 스테이트끼리 연결 / 스테이트들 사이의 연결 조건 = 룰 설정 
+
+    💻 experiment : (1) Ground-(rule)-(2) JumpStart-(rule)-(3) Jumping-(rule)-(4) JumpEnd(rule)-(5) Ground   
+* ⌨️ Jump Code 
+  ```c++
+    PlayerInputComponent->BindAction(TEXT("Jump"),EInputEvent::IE_Pressed, this, &AMyCharacter::Jump);
+    // Jump 함수는 언리얼 내부 제공함수로 따로 코드를 만들지 않아도 됨
+    // IE_Pressed : 눌렀을때의 상태에서 해당 액션 수행
+    // 이외의 상태옵션도 많음!
+  ```
