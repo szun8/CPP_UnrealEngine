@@ -118,4 +118,25 @@ Product - Build 옵션 사용시 Debug 환경설정을 사용하도록 되어 �
     // Jump 함수는 언리얼 내부 제공함수로 따로 코드를 만들지 않아도 됨
     // IE_Pressed : 눌렀을때의 상태에서 해당 액션 수행
     // 이외의 상태옵션도 많음!
-  ```
+  ```   
+
+
+🕹 21th, Oct 2-3(인데 4로 commit 해버리기). 애니메이션 몽타주
+* Mesh의 Asset 생성 - 애님 몽타주 : 연속적인 애니메이션 편집 및 연출
+* `Attack()` : `Jump`와 같이 `BindAction`으로 액션 매핑 (프로젝트 세팅 - 입력 필요!   
+📁 [클릭]-[캐릭터]-[애니메이션]의 경로로 코드 진행 (<-> [애니메이션]-[캐릭터]의 경로)   
+ ⌨️ Attack Code 
+  ```c++
+    //캐릭터.cpp
+    PlayerInputComponent->BindAction(TEXT("Attack"),EInputEvent::IE_Pressed, this, &AMyCharacter::Attack);
+    ⬇️
+    void AMyCharacter::Attack();
+    ⬇️ 
+    //애니메이션.cpp
+    PlayAttackMontage();
+    ⬇️ //!(중복플레잉)
+    Montage_Play(AttackMontage, 1.f);
+    //AttackMontage는 생성자에서 만들어놓은 애님 몽타주 에셋 경로 오브젝트에 연결
+}
+    
+  ```  
