@@ -29,7 +29,8 @@ public:
     void UpDown(float Value);  // 반드시 인자로 float를 받아줘야함
     void LeftRight(float Value);
     void Yaw(float Value);  // 마우스 입력 도리도리
-
+    
+    void Attack();
 private:
     UPROPERTY(VisibleAnywhere)
     class USpringArmComponent* SpringArm;

@@ -11,7 +11,11 @@ class TESTUNREALENGINE_API UMyAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
     
+public:
+    UMyAnimInstance();
+    
     virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+    void PlayAttackMontage();
 	
 private:
     UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
@@ -20,4 +24,7 @@ private:
     
     UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
     bool IsFalling;
+    
+    UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+    UAnimMontage* AttackMontage;
 };

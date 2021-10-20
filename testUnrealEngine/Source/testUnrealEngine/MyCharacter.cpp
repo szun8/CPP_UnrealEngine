@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 // UCameraComponent 포함 헤더
 #include "Components/CapsuleComponent.h"
+#include "MyAnimInstance.h"
 
 // 오.. 헤더 자동완성 왜되지??? 호와,,,,0_0!
 
@@ -61,8 +62,10 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
     PlayerInputComponent->BindAxis(TEXT("UpDown"), this, &AMyCharacter::UpDown);
     PlayerInputComponent->BindAxis(TEXT("LeftRight"), this, &AMyCharacter::LeftRight);
     PlayerInputComponent->BindAxis(TEXT("Yaw"), this, &AMyCharacter::Yaw);
+    
     PlayerInputComponent->BindAction(TEXT("Jump"),EInputEvent::IE_Pressed, this, &AMyCharacter::Jump);
     // Jump 함수는 이미 만들어져있음!
+    PlayerInputComponent->BindAction(TEXT("Attack"),EInputEvent::IE_Pressed, this, &AMyCharacter::Attack);
 
 }
 
@@ -89,5 +92,13 @@ void AMyCharacter::Yaw(float Value){
     // 마우스 카메라 이동
     AddControllerYawInput(Value);
     // player에 적용하는 것이 아니라, controller에 적용시킨다는 것을 생각!
+}
+
+void AMyCharacter::Attack(){
+    auto AnimInstance = Cast<UMyAnimInstance>(GetMesh()->GetAnimInstance());
+    if(AnimInstance){
+        // Null이 아니라고 하면,
+        AnimInstance->PlayAttackMontage();
+    }
 }
 

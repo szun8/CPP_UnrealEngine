@@ -4,6 +4,15 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/PawnMovementComponent.h"
 
+UMyAnimInstance::UMyAnimInstance(){
+    // 생성자 for attack animation
+    static ConstructorHelpers::FObjectFinder<UAnimMontage> AM(TEXT("AnimMontage'/Game/Animations/Greystone_Skeleton_Montage.Greystone_Skeleton_Montage'"));
+    
+    if(AM.Succeeded()){
+        AttackMontage = AM.Object;
+    }
+}
+
 void UMyAnimInstance::NativeUpdateAnimation(float DeltaSeconds){
     Super::NativeUpdateAnimation(DeltaSeconds);
     // Super : GENERATED_BODY()에 포함된 기능, 공식문법 X
@@ -24,5 +33,14 @@ void UMyAnimInstance::NativeUpdateAnimation(float DeltaSeconds){
     auto Character = Cast<ACharacter>(Pawn);
     if(Character){
         IsFalling = Character->GetMovementComponent()->IsFalling();
+    }
+}
+
+// 마우스를 클릭하는 순간 애니메이션 실행 => 호출 순서 : 캐릭터.h -> 애니메이션.h
+void UMyAnimInstance::PlayAttackMontage(){
+    if(!Montage_IsPlaying(AttackMontage)){
+        // 플레이중이 아닌 경우에 해당 애미메이션을 실행한다.
+        // 중복 플레잉이 되면 안되기에
+        Montage_Play(AttackMontage, 1.f);
     }
 }
