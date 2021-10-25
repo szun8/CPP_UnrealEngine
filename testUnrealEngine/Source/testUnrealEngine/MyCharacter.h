@@ -26,16 +26,26 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
     
+    UFUNCTION()
+    // delegate조건 함수 정의, ended는 매개변수 두개!
+    void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+    
     void UpDown(float Value);  // 반드시 인자로 float를 받아줘야함
     void LeftRight(float Value);
     void Yaw(float Value);  // 마우스 입력 도리도리
     
     void Attack();
+    
 private:
     UPROPERTY(VisibleAnywhere)
     class USpringArmComponent* SpringArm;
     
     UPROPERTY(VisibleAnywhere)
     class UCameraComponent* Camera;
-
+    
+    UPROPERTY(VisibleAnywhere, category = Pawn)
+    bool IsAttacking = false;
+    
+    UPROPERTY()
+    class UMyAnimInstance* AnimInstance;
 };

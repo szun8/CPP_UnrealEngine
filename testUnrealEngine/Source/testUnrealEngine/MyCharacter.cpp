@@ -44,7 +44,12 @@ AMyCharacter::AMyCharacter()
 void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+    
+    // MyCharacter.h에서 전방선언 후 mesh 긁어오기
+    AnimInstance = Cast<UMyAnimInstance>(GetMesh()->GetAnimInstance());
+    
+    // delegate : 함수가 종료되면 해당 조건을 실행하라
+    AnimInstance->OnMontageEnded.AddDynamic(this, &AMyCharacter::OnAttackMontageEnded);
 }
 
 // Called every frame
@@ -67,6 +72,10 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
     // Jump 함수는 이미 만들어져있음!
     PlayerInputComponent->BindAction(TEXT("Attack"),EInputEvent::IE_Pressed, this, &AMyCharacter::Attack);
 
+}
+void AMyCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted){
+    // attack이 종료되면 false로,
+    IsAttacking = false;
 }
 
 void AMyCharacter::UpDown(float Value){
@@ -95,10 +104,12 @@ void AMyCharacter::Yaw(float Value){
 }
 
 void AMyCharacter::Attack(){
-    auto AnimInstance = Cast<UMyAnimInstance>(GetMesh()->GetAnimInstance());
-    if(AnimInstance){
-        // Null이 아니라고 하면,
-        AnimInstance->PlayAttackMontage();
-    }
+    if(IsAttacking)
+        // 이미 행동을 하고 있다면, 탈출
+        return;
+    
+    // delegate 사용으로 매 프레임마다 행동확인을 할 필요없이 알아서 행동 종료인식
+    AnimInstance->PlayAttackMontage();
+    IsAttacking = true;
 }
 
