@@ -1,5 +1,6 @@
 # CPP_UnrealEngine
-- 언리얼 작명 규칙 : https://docs.unrealengine.com/4.27/ko/ProductionPipelines/DevelopmentSetup/CodingStandard/
++ 🌐 참고 : [언리얼 작명 규칙](https://docs.unrealengine.com/4.27/ko/ProductionPipelines/DevelopmentSetup/CodingStandard/)
++ 🌐 참고 : [함수의 생명주기](https://docs.unrealengine.com/4.26/ko/ProgrammingAndScripting/ProgrammingWithCPP/UnrealArchitecture/Actors/ActorLifecycle/)
 
 🕹 29th, Sep
 
@@ -137,6 +138,32 @@ Product - Build 옵션 사용시 Debug 환경설정을 사용하도록 되어 �
     ⬇️ //!(중복플레잉)
     Montage_Play(AttackMontage, 1.f);
     //AttackMontage는 생성자에서 만들어놓은 애님 몽타주 에셋 경로 오브젝트에 연결
-}
+    }
+  ```
+
+
+🕹 25th, Oct 2-4. delegate   
+: 대리자, 위임 / 함수를 안전하게 호출할 수 있는 기능, 콜백처리 ♻️   
+➡️ 어떤 상황이 일어났을 때 뭐를 호출해줬으면 무엇을 해줘 (조건 생성)
+* 🛎 들어가기에 앞서,    
+    앞 전시간에 다뤘던 `애니메이션 몽타주`에서 매프레임마다 공격이 종료되었는지 아닌지 확인을 했다면, `delegate`를 사용해 애니메이션 종료상황을 인식   
+    ➡️ 바로 종료 조건 실행가능
+
+ ⌨️ Delegate Code 
+  ```c++
+<MyCharacter.h>
+public:	
+    UFUNCTION()
+    // delegate조건 함수 정의, ended는 매개변수 두개!
+    void OnAttackMontageEnded(UAnimMontage*, bool);
+
+private:
+    UPROPERTY()
+    class UMyAnimInstance* AnimInstance;
+
+<MyCharacter.cpp>
+    AnimInstance ->OnmOntageEnded.AddDynamic(this, &MyCharacter::OnAttackMontageEnded);
+    //끝났을 때 해당 함수를 호출, 해당 함수에는 끝났을때 실행되는 행동이 담겨져있음
     
-  ```  
+    }
+  ```
