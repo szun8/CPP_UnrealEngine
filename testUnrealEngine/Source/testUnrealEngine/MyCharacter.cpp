@@ -79,22 +79,28 @@ void AMyCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted
 }
 
 void AMyCharacter::UpDown(float Value){
-    if(Value == 0.f)
-        return;
+//    if(Value == 0.f)
+//        return;
     //UE_LOG(LogTemp, Warning, TEXT("UpDown %f"), Value);
     
     // Move Code(2-1)
     AddMovementInput(GetActorForwardVector(), Value); // Forward : Up 기준 / 마이너스는 자동적으로 Down
     
+    // BlendSpace(Code)
+    UpDownValue = Value;
+    
 }
 
 void AMyCharacter::LeftRight(float Value){
-    if(Value == 0.f)
-        return;
+//    if(Value == 0.f)
+//        return;
     //UE_LOG(LogTemp, Warning, TEXT("LeftRight %f"), Value);
     
     // Move Code(2-2)
     AddMovementInput(GetActorRightVector(), Value); // Right 기준, 마이너스는 자동적으로 Left
+    
+    // BlendSpace(Code)
+    LeftRightValue = Value;
 }
 
 void AMyCharacter::Yaw(float Value){
@@ -110,6 +116,10 @@ void AMyCharacter::Attack(){
     
     // delegate 사용으로 매 프레임마다 행동확인을 할 필요없이 알아서 행동 종료인식
     AnimInstance->PlayAttackMontage();
+    AnimInstance->JumpToSection(AttackIndex);
+    // header에서 0으로 초기화하고
+    AttackIndex = (AttackIndex+1)%3;
+    // Attack이 실행될 때마다 공격모션 갱신 (+1) => 다음 공격모션은 +1이 된 모션으로 진행됨
     IsAttacking = true;
 }
 

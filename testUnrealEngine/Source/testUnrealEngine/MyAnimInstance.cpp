@@ -3,6 +3,7 @@
 #include "MyAnimInstance.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/PawnMovementComponent.h"
+#include "MyCharacter.h"
 
 UMyAnimInstance::UMyAnimInstance(){
     // 생성자 for attack animation
@@ -30,9 +31,14 @@ void UMyAnimInstance::NativeUpdateAnimation(float DeltaSeconds){
     }
     // 근데 매 프레임 움직이는(try)것이 아닐수있는데 매번 확인(if)하는게 낭비 아닌가?하지만 그게 그거라고 한다
     
-    auto Character = Cast<ACharacter>(Pawn);
+    auto Character = Cast<AMyCharacter>(Pawn);
+    // second 정보를 가져오는 파일 변경으로 cast경로 변경
     if(Character){
         IsFalling = Character->GetMovementComponent()->IsFalling();
+        
+        // Tick마다 위아래왼오 정보 애니메이션과 연동
+        Vertical = Character->UpDownValue;
+        Horizontal = Character->LeftRightValue;
     }
 }
 
@@ -43,4 +49,17 @@ void UMyAnimInstance::PlayAttackMontage(){
         // 중복 플레잉이 되면 안되기에
         Montage_Play(AttackMontage, 1.f);
     }
+}
+
+void UMyAnimInstance::AnimNotify_AttackHit(){
+    UE_LOG(LogTemp,Log, TEXT("AnimNotify_AttackHit"));
+}
+
+FName UMyAnimInstance::GetAttackMontageName(int32 SectionIndex){
+    return FName(*FString::Printf(TEXT("Attack%d"),SectionIndex));
+}
+
+void UMyAnimInstance::JumpToSection(int32 SectionIndex) {
+    FName Name = GetAttackMontageName(SectionIndex);
+    Montage_JumpToSection(Name, AttackMontage);
 }

@@ -35,7 +35,7 @@ public:
     void Yaw(float Value);  // 마우스 입력 도리도리
     
     void Attack();
-    
+
 private:
     UPROPERTY(VisibleAnywhere)
     class USpringArmComponent* SpringArm;
@@ -48,4 +48,15 @@ private:
     
     UPROPERTY()
     class UMyAnimInstance* AnimInstance;
+    
+    UPROPERTY()
+    int32 AttackIndex = 0;
+    
+public:
+    UPROPERTY()
+    float UpDownValue = 0;
+    
+    UPROPERTY()
+    float LeftRightValue = 0;
+    
 };
