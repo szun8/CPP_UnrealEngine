@@ -102,7 +102,7 @@ Product - Build 옵션 사용시 Debug 환경설정을 사용하도록 되어 �
 
 📒 보통 애니메이션 기능은 독립적인 class로 생성 (Tick으로가 아닌?)   
 
-🕹 16th, Oct 2-2. 스테이트 머신
+🕹 16th, Oct 2-2. [스테이트 머신](https://docs.unrealengine.com/4.27/ko/AnimatingObjects/SkeletalMeshAnimation/StateMachines/)
 
 * 🛎 들어가기에 앞서,    
     앞 전시간에 다뤘던 `if-else문`으로 조건을 나누는 것은 조건이 많아지면 굉장히 어지뤄워지고 관리가 힘들어짐 => 이번시간에 다루는 `StateMachine`을 이용하면 보다 쾌적한 조건관리를 할 수 있음
@@ -122,7 +122,7 @@ Product - Build 옵션 사용시 Debug 환경설정을 사용하도록 되어 �
   ```   
 
 
-🕹 21th, Oct 2-3(인데 4로 commit 해버리기). 애니메이션 몽타주
+🕹 21th, Oct 2-3(인데 4로 commit 해버리기). [애니메이션 몽타주](https://docs.unrealengine.com/4.27/ko/AnimatingObjects/SkeletalMeshAnimation/AnimMontage/)
 * Mesh의 Asset 생성 - 애님 몽타주 : 연속적인 애니메이션 편집 및 연출
 * `Attack()` : `Jump`와 같이 `BindAction`으로 액션 매핑 (프로젝트 세팅 - 입력 필요!   
 📁 [클릭]-[캐릭터]-[애니메이션]의 경로로 코드 진행 (<-> [애니메이션]-[캐릭터]의 경로)   
@@ -167,3 +167,22 @@ private:
     
     }
   ```
+🕹 1st, Nov 2-5. [Animation Notify](https://docs.unrealengine.com/4.27/ko/AnimatingObjects/SkeletalMeshAnimation/Sequences/Notifies/)  
+: 원하는 애니메이션의 순간이 실행되면 원하는 조건(이벤트 : 소리, 로그, 효과 등)이 틀어지도록 설정하는 기능   
+
+⏳ 공격모션을 다양하게 하고 싶을 때,   
+
+공격 애니메이션의 섹션을 구분 짓고 이어져있는 링크 섹션들을 일괄 해제시켜준다. 공격 모션 이름에 따라 공격시, 다르게 애니메이션이 진행된다.   
+🪀 실행 경로
+1. 바꿔줄 공격모션의 index 선언 및 초기화
+2. 공격 함수 실행 (섹션 실행 함수)
+3. 공격 섹션 이름을 받아와주는 함수 + JumpToSection
+4. 공격 모션 변화를 위한 인덱스 수정
+
+
+🕹 1st, Nov 2-6. Blend Space in BP   
+: 공간을 섞는다 / 여러 애니메이션 활용시 유용 / 축(Axis이자 Dimention)으로 원하는 위치에 애니메이션 설정가능 / 설정해주지 않은 위치도 설정된 위치 차에 따라 자연스럽게 blend 되는 장점을 가짐  
+🪀 실행 경로   
+1. 캐릭터.cpp 에서 움직이는 위치정도를 캐릭터 정보 추출
+2. 애니메이션.cpp 에서 캐릭터.cpp 에서 추출된 위치 정보에 따라 블랜드 스페이스의 축 값을 연동
+3. 코드 상에서 연결해준 축값을 BP 스테이트머신 상의 애니메이션 움직임 정보 연결
