@@ -9,6 +9,7 @@
 #include "MyAnimInstance.h"
 #include "DrawDebugHelpers.h"
 // Debug를 도와주는 시각적 도구
+#include "MyWeapon.h"
 
 // 오.. 헤더 자동완성 왜되지??? 호와,,,,0_0!
 
@@ -39,6 +40,21 @@ AMyCharacter::AMyCharacter()
         GetMesh()->SetSkeletalMesh(SM.Object);
         // private로 mesh가 막혀있어서 함수사용해서 내부 접근 필요!
     }
+    
+// 초기 시작부터 스켈레톤이 무기를 들고 있게 하는 코드
+    
+//    FName WeaponSocket(TEXT("hand_l_socket"));
+//    우리가 만들어준 왼손 소켓 불러오기
+//    if(GetMesh()->DoesSocketExist(WeaponSocket)){
+//        Weapon = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WEAPON"));
+//        static ConstructorHelpers::FObjectFinder<UStaticMesh> SW(TEXT("StaticMesh'/Game/ParagonGreystone/FX/Meshes/Heroes/Greystone/SM_Greystone_Blade_01.SM_Greystone_Blade_01'"));
+//
+//        if(SW.Succeeded()){
+//            Weapon->SetStaticMesh(SW.Object);
+//        }
+//    }
+//    Weapon->SetupAttachment(GetMesh(),WeaponSocket);
+    // 무기가 아무데나 붙는게 아니고 우리가 붙여준 위기에 붙여주는 코드
 
 }
 
@@ -46,6 +62,18 @@ AMyCharacter::AMyCharacter()
 void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+    
+    FName WeaponSocket(TEXT("hand_l_socket"));
+    auto currentWeapon = GetWorld()->SpawnActor<AMyWeapon>(FVector::ZeroVector, FRotator::ZeroRotator);
+    // 무기 지정 위치로 스폰
+    
+    if(currentWeapon){
+        currentWeapon->AttachToComponent
+        (GetMesh(),
+        FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+         WeaponSocket);
+        // 무기가 스폰되어 있으면 주워서 붙여줄건데, 어떻게 붙여주고 어디에 붙여줄건지 지정
+    }
 
 }
 void AMyCharacter::PostInitializeComponents(){
@@ -55,6 +83,7 @@ void AMyCharacter::PostInitializeComponents(){
     AnimInstance = Cast<UMyAnimInstance>(GetMesh()->GetAnimInstance());
     
     if(AnimInstance){
+        // 공격 판정 체크 -> notify에서 broadcast해주면 delegate를 통해 해당 코드가 실행될거임
         AnimInstance->OnAttackHit.AddUObject(this, &AMyCharacter::AttackCheck);
         
         // delegate : 함수가 종료되면 해당 조건을 실행하라
