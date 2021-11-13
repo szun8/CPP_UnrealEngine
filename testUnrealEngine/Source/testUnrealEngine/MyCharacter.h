@@ -18,6 +18,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+    virtual void PostInitializeComponents() override;
 
 public:	
 	// Called every frame
@@ -35,6 +36,7 @@ public:
     void Yaw(float Value);  // 마우스 입력 도리도리
     
     void Attack();
+    void AttackCheck();
 
 private:
     UPROPERTY(VisibleAnywhere)

@@ -52,7 +52,9 @@ void UMyAnimInstance::PlayAttackMontage(){
 }
 
 void UMyAnimInstance::AnimNotify_AttackHit(){
-    UE_LOG(LogTemp,Log, TEXT("AnimNotify_AttackHit"));
+    //UE_LOG(LogTemp,Log, TEXT("AnimNotify_AttackHit"));
+    OnAttackHit.Broadcast();
+    // 공격이 일어났음을 알려주는 함수기능
 }
 
 FName UMyAnimInstance::GetAttackMontageName(int32 SectionIndex){

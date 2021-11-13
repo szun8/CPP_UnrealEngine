@@ -7,6 +7,8 @@
 // UCameraComponent 포함 헤더
 #include "Components/CapsuleComponent.h"
 #include "MyAnimInstance.h"
+#include "DrawDebugHelpers.h"
+// Debug를 도와주는 시각적 도구
 
 // 오.. 헤더 자동완성 왜되지??? 호와,,,,0_0!
 
@@ -44,12 +46,20 @@ AMyCharacter::AMyCharacter()
 void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+}
+void AMyCharacter::PostInitializeComponents(){
     
+    Super::PostInitializeComponents();
     // MyCharacter.h에서 전방선언 후 mesh 긁어오기
     AnimInstance = Cast<UMyAnimInstance>(GetMesh()->GetAnimInstance());
     
-    // delegate : 함수가 종료되면 해당 조건을 실행하라
-    AnimInstance->OnMontageEnded.AddDynamic(this, &AMyCharacter::OnAttackMontageEnded);
+    if(AnimInstance){
+        AnimInstance->OnAttackHit.AddUObject(this, &AMyCharacter::AttackCheck);
+        
+        // delegate : 함수가 종료되면 해당 조건을 실행하라
+        AnimInstance->OnMontageEnded.AddDynamic(this, &AMyCharacter::OnAttackMontageEnded);
+    }
 }
 
 // Called every frame
@@ -121,5 +131,45 @@ void AMyCharacter::Attack(){
     AttackIndex = (AttackIndex+1)%3;
     // Attack이 실행될 때마다 공격모션 갱신 (+1) => 다음 공격모션은 +1이 된 모션으로 진행됨
     IsAttacking = true;
+}
+
+void AMyCharacter::AttackCheck(){
+    
+    FHitResult HitResult;
+    // 결과물
+    FCollisionQueryParams Params(NAME_None, false, this);
+    
+    float AttackRange = 100.f;
+    float AttackRadius = 50.f;
+    
+    // 누가 맞았는지 피격 판정
+    bool bResult = GetWorld()->SweepSingleByChannel(
+         OUT HitResult, // 결과물받아주기
+         GetActorLocation(),    // 시작위치
+         GetActorLocation() + GetActorForwardVector() * AttackRange,    // 끝나는 방향 => 이번엔 앞방향으로 100(attacckRange)만큼
+         FQuat::Identity,   // 회전값
+         ECollisionChannel::ECC_GameTraceChannel2,  // 충돌탐지 채널정보
+         FCollisionShape::MakeSphere(AttackRadius), // 어떤 형태로 탐색을 할 것인가
+                                     Params);
+    
+    // 맞았는지 아닌지 drawDebughelper를 통해 시각적 효과 나타내기 (+ 헤더추가)
+    FVector Vec = GetActorForwardVector() * AttackRange;
+    FVector Center = GetActorLocation() + Vec * 0.5f;
+    float HalfHeight = AttackRange * 0.5f + AttackRadius;
+    FQuat Rotation = FRotationMatrix::MakeFromZ(Vec).ToQuat();  // 회전방향
+    FColor DrawColor;   // 색 변수
+    if(bResult){
+        DrawColor = FColor::Green;  // 맞았으면 초록
+    }
+    else{
+        DrawColor = FColor::Red;    // 맞지 않았으면 빨강
+    }
+    
+    DrawDebugCapsule(GetWorld(),Center, HalfHeight, AttackRadius, Rotation, DrawColor,false, 2.f);  // 2초 정도 유지
+    
+    // 맞았으면 아래 로그를 배출할것임.
+    if(bResult && HitResult.Actor.IsValid()){
+        UE_LOG(LogTemp, Log, TEXT("Hit Actor : %s"), *HitResult.Actor->GetName());
+    }
 }
 
